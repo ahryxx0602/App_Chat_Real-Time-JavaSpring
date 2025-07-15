@@ -15,7 +15,7 @@ import com.ahryxx.chat.playload.MessageRequest;
 import com.ahryxx.chat.repositories.RoomRepository;
 
 @Controller
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin("http://localhost:5173")
 public class ChatController {
 
     private RoomRepository roomRepository;
@@ -25,11 +25,13 @@ public class ChatController {
     }
 
     // for sending and receiving messages
-    @MessageMapping("/sendMessage/{roomId}") // /app/sendMessage/roomId
-    @SendTo("/topic/room/{roomId}") // subcribe
+    @MessageMapping("/sendMessage/{roomId}")// /app/sendMessage/roomId
+    @SendTo("/topic/room/{roomId}")//subscribe
     public Message sendMessage(
             @DestinationVariable String roomId,
-            @RequestBody MessageRequest request) throws Exception {
+            @RequestBody MessageRequest request
+    ) {
+
         Room room = roomRepository.findByRoomId(request.getRoomId());
         Message message = new Message();
         message.setContent(request.getContent());
@@ -39,9 +41,12 @@ public class ChatController {
             room.getMessages().add(message);
             roomRepository.save(room);
         } else {
-            throw new RuntimeException("Room not found!");
+            throw new RuntimeException("room not found !!");
         }
+
         return message;
+
+
     }
 
 }
